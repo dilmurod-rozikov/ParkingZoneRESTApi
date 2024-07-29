@@ -1,4 +1,4 @@
-@ParkingZoneWebApi_HostAddress = http://localhost:5184
+@ParkingZoneWebApi_HostAddress = http://localhost:5062
 
 GET {{ParkingZoneWebApi_HostAddress}}/weatherforecast/
 Accept: application/json
