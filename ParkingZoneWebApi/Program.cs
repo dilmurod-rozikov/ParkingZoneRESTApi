@@ -1,14 +1,26 @@
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ParkingZoneWebApi.DataAccess;
+using ParkingZoneWebApi.Repository;
+using ParkingZoneWebApi.Repository.Interfaces;
+using ParkingZoneWebApi.Services;
+using ParkingZoneWebApi.Services.Interfaces;
 
 namespace ParkingZoneWebApi
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddScoped<IParkingZoneRepository, ParkingZoneRepository>();
+            builder.Services.AddScoped<IParkingZoneService, ParkingZoneService>();
+
+            builder.Services.AddScoped<IParkingSlotService, ParkingSlotService>();
+            builder.Services.AddScoped<IParkingSlotRepository, ParkingSlotRepository>();
+
+            builder.Services.AddScoped<IReservationService, ReservationService>();
+            builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -28,8 +40,9 @@ namespace ParkingZoneWebApi
 
             app.UseAuthorization();
 
-
             app.MapControllers();
+
+            //app.MapParkingZoneEndpoints();
 
             app.Run();
         }
