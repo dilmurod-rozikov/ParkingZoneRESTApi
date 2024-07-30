@@ -36,7 +36,7 @@ namespace ParkingZoneWebApi.Controllers
             if (parkingSlot == null)
                 return NotFound();
 
-            return parkingSlot;
+            return Ok(parkingSlot);
         }
 
         [HttpPut("{id}")]
