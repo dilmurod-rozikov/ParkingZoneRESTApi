@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneWebApi.DTOs;
-using ParkingZoneWebApi.Models;
 using ParkingZoneWebApi.Services.Interfaces;
 
 namespace ParkingZoneWebApi.Controllers

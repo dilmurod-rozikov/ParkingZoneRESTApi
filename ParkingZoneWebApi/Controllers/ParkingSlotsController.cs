@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ParkingZoneWebApi.DataAccess;
+using ParkingZoneWebApi.DTOs;
 using ParkingZoneWebApi.Models;
 using ParkingZoneWebApi.Services.Interfaces;
 
@@ -11,10 +11,11 @@ namespace ParkingZoneWebApi.Controllers
     public class ParkingSlotsController : ControllerBase
     {
         private readonly IParkingSlotService _parkingSlotService;
-
-        public ParkingSlotsController(IParkingSlotService parkingSlotService)
+        private readonly IParkingZoneService _parkingZoneService;
+        public ParkingSlotsController(IParkingSlotService parkingSlotService, IParkingZoneService parkingZoneService)
         {
             _parkingSlotService = parkingSlotService;
+            _parkingZoneService = parkingZoneService;
         }
 
         [HttpGet]
@@ -39,14 +40,14 @@ namespace ParkingZoneWebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateParkingSlot(int id, ParkingSlot parkingSlot)
+        public async Task<IActionResult> UpdateParkingSlot(int id, ParkingSlotDto parkingSlot)
         {
             if (id != parkingSlot.Id)
                 return BadRequest();
-            
+
             try
             {
-                await _parkingSlotService.UpdateAsync(parkingSlot);
+                await _parkingSlotService.UpdateAsync(parkingSlot.MapToModel());
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -58,9 +59,13 @@ namespace ParkingZoneWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ParkingSlot>> PostParkingSlot(ParkingSlot parkingSlot)
+        public async Task<ActionResult<ParkingSlot>> CreateParkingSlot(ParkingSlotDto parkingSlot, int zoneId)
         {
-            if(!await _parkingSlotService.CreateAsync(parkingSlot))
+            var zone = await _parkingZoneService.GetByIdAsync(zoneId);
+            if(parkingSlot is null || zone is null)
+                return BadRequest();
+
+            if(!await _parkingSlotService.CreateAsync(parkingSlot.MapToModel()))
             {
                 ModelState.AddModelError("", "Something went wrong while saving the data.");
                 return StatusCode(500, ModelState);
