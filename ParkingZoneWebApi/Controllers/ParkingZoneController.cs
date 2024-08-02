@@ -42,6 +42,8 @@ namespace ParkingZoneWebApi.Controllers
             if (zoneDto is null)
                 return NotFound();
 
+            //return already exsist if title + address is the same
+
             try
             {
                 if (!await _parkingZoneService.CreateAsync(zoneDto.MapToModel()))
@@ -81,7 +83,7 @@ namespace ParkingZoneWebApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteParkingZone(int id)
         {
             var zone = await _parkingZoneService.GetByIdAsync(id);

@@ -44,10 +44,15 @@ namespace ParkingZoneWebApi.Controllers
         {
             if (id != parkingSlot.Id)
                 return BadRequest();
+            var slot = await _parkingSlotService.GetByIdAsync(id);
+            var zone = await _parkingZoneService.GetByIdAsync(parkingSlot.ParkingZoneId);
+
+            if (slot is null || zone is null)
+                return NotFound();
 
             try
             {
-                await _parkingSlotService.UpdateAsync(parkingSlot.MapToModel());
+                await _parkingSlotService.UpdateAsync(parkingSlot.MapToModel(zone));
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -59,19 +64,21 @@ namespace ParkingZoneWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ParkingSlot>> CreateParkingSlot(ParkingSlotDto parkingSlot, int zoneId)
+        public async Task<ActionResult<ParkingSlot>> CreateParkingSlot(ParkingSlotDto parkingSlot)
         {
-            var zone = await _parkingZoneService.GetByIdAsync(zoneId);
+            var zone = await _parkingZoneService.GetByIdAsync(parkingSlot.ParkingZoneId);
             if(parkingSlot is null || zone is null)
                 return BadRequest();
 
-            if(!await _parkingSlotService.CreateAsync(parkingSlot.MapToModel()))
+            //Check for unique parking slot number....
+
+            if(!await _parkingSlotService.CreateAsync(parkingSlot.MapToModel(zone)))
             {
                 ModelState.AddModelError("", "Something went wrong while saving the data.");
                 return StatusCode(500, ModelState);
             }
 
-            return CreatedAtAction("GetParkingSlot", new { id = parkingSlot.Id }, parkingSlot);
+            return Ok("Successfully created.");
         }
 
         [HttpDelete("{id}")]

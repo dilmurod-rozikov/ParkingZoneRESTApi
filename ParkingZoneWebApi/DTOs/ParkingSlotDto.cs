@@ -32,13 +32,14 @@ namespace ParkingZoneWebApi.DTOs
             Category = category;
         }
 
-        public ParkingSlot MapToModel()
+        public ParkingSlot MapToModel(ParkingZone parkingZone)
         {
             return new()
             {
                 Id = Id,
                 No = No,
                 IsAvailable = IsAvailable,
+                ParkingZone = parkingZone,
                 ParkingZoneId = ParkingZoneId,
                 Category = Category
             };
