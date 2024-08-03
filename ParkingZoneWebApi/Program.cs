@@ -13,6 +13,7 @@ namespace ParkingZoneWebApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped<IParkingZoneRepository, ParkingZoneRepository>();
             builder.Services.AddScoped<IParkingZoneService, ParkingZoneService>();
 
@@ -34,15 +35,15 @@ namespace ParkingZoneWebApi
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
+            app.UseRouting();
             app.UseAuthorization();
 
             app.MapControllers();
-
-            //app.MapParkingZoneEndpoints();
 
             app.Run();
         }
