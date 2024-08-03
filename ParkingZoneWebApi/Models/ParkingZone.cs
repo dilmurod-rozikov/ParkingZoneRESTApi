@@ -21,6 +21,6 @@ namespace ParkingZoneWebApi.Models
         [Required]
         public DateTimeOffset CreatedDate { get; set; }
 
-        public ICollection<ParkingSlot> ParkingSlots { get; set; }
+        public ICollection<ParkingSlot>? ParkingSlots { get; set; }
     }
 }

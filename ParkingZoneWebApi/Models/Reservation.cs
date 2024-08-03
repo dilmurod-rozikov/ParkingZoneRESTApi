@@ -25,6 +25,6 @@ namespace ParkingZoneWebApi.Models
         public int ParkingSlotId { get; set; }
 
         [Required]
-        public ParkingSlot ParkingSlot { get; set; }
+        public ParkingSlot? ParkingSlot { get; set; }
     }
 }
