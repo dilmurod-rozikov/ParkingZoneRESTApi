@@ -22,27 +22,5 @@ namespace ParkingZoneWebApi.DTOs
         [Required]
         [EnumDataType(typeof(Category))]
         public Category Category { get; set; } = Category.Standard;
-
-        public ParkingSlotDto(int id, uint no, bool isAvailable, int parkingZoneId, Category category)
-        {
-            Id = id;
-            No = no;
-            IsAvailable = isAvailable;
-            ParkingZoneId = parkingZoneId;
-            Category = category;
-        }
-
-        public ParkingSlot MapToModel(ParkingZone parkingZone)
-        {
-            return new()
-            {
-                Id = Id,
-                No = No,
-                IsAvailable = IsAvailable,
-                ParkingZone = parkingZone,
-                ParkingZoneId = ParkingZoneId,
-                Category = Category
-            };
-        }
     }
 }

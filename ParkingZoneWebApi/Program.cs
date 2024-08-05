@@ -14,6 +14,8 @@ namespace ParkingZoneWebApi
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
+
             builder.Services.AddScoped<IParkingZoneRepository, ParkingZoneRepository>();
             builder.Services.AddScoped<IParkingZoneService, ParkingZoneService>();
 
@@ -23,9 +25,12 @@ namespace ParkingZoneWebApi
             builder.Services.AddScoped<IReservationService, ReservationService>();
             builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             var app = builder.Build();

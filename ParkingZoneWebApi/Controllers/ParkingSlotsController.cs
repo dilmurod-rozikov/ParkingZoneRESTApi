@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneWebApi.DTOs;
 using ParkingZoneWebApi.Models;
@@ -7,21 +8,25 @@ using ParkingZoneWebApi.Services.Interfaces;
 namespace ParkingZoneWebApi.Controllers
 {
     [Route("api/[controller]")]
+    [ApiConventionType(typeof(DefaultApiConventions))]
     [ApiController]
     public class ParkingSlotsController : ControllerBase
     {
         private readonly IParkingSlotService _parkingSlotService;
         private readonly IParkingZoneService _parkingZoneService;
-        public ParkingSlotsController(IParkingSlotService parkingSlotService, IParkingZoneService parkingZoneService)
+        private readonly IMapper _mapper;
+
+        public ParkingSlotsController(IParkingSlotService parkingSlotService, IParkingZoneService parkingZoneService, IMapper mapper)
         {
             _parkingSlotService = parkingSlotService;
-            _parkingZoneService = parkingZoneService;
+            _parkingSlotService = parkingSlotService;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ParkingSlot>>> GetParkingSlots()
+        public async Task<ActionResult<IEnumerable<ParkingSlotDto>>> GetParkingSlots()
         {
-            var slots = await _parkingSlotService.GetAllAsync();
+            var slots = _mapper.Map<List<ParkingSlotDto>>(await _parkingSlotService.GetAllAsync());
             if (slots is null)
                 return NotFound();
 
@@ -31,7 +36,7 @@ namespace ParkingZoneWebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ParkingSlot>> GetParkingSlotById(int id)
         {
-            var parkingSlot = await _parkingSlotService.GetByIdAsync(id);
+            var parkingSlot = _mapper.Map<ParkingSlotDto>(await _parkingSlotService.GetByIdAsync(id));
 
             if (parkingSlot == null)
                 return NotFound();
@@ -39,20 +44,22 @@ namespace ParkingZoneWebApi.Controllers
             return Ok(parkingSlot);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateParkingSlot(int id, ParkingSlotDto parkingSlot)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateParkingSlot(int id, ParkingSlotDto parkingSlotDto, [FromServices] IParkingZoneService parkingZoneService)
         {
-            if (id != parkingSlot.Id)
+            if (id != parkingSlotDto.Id)
                 return BadRequest();
-            var slot = await _parkingSlotService.GetByIdAsync(id);
-            var zone = await _parkingZoneService.GetByIdAsync(parkingSlot.ParkingZoneId);
+            var slot = await _parkingSlotService.GetByIdAsync(parkingSlotDto.Id);
+            var zone = await parkingZoneService.GetByIdAsync(parkingSlotDto.ParkingZoneId);
 
             if (slot is null || zone is null)
-                return NotFound();
+                return NotFound("parkingslot or parkingzone is not found.");
+
+            var mapped = _mapper.Map<ParkingSlot>(parkingSlotDto);
 
             try
             {
-                await _parkingSlotService.UpdateAsync(parkingSlot.MapToModel(zone));
+                await _parkingSlotService.UpdateAsync(mapped);
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -64,17 +71,27 @@ namespace ParkingZoneWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ParkingSlot>> CreateParkingSlot(ParkingSlotDto parkingSlot)
+        public async Task<ActionResult> CreateParkingSlot(ParkingSlotDto parkingSlotDto)
         {
-            var zone = await _parkingZoneService.GetByIdAsync(parkingSlot.ParkingZoneId);
-            if(parkingSlot is null || zone is null)
+            var zone = await _parkingZoneService.GetByIdAsync(parkingSlotDto.ParkingZoneId);
+            if(parkingSlotDto is null || zone is null)
                 return BadRequest();
 
-            //Check for unique parking slot number....
+            var mapped = _mapper.Map<ParkingSlot>(parkingSlotDto);
+            mapped.ParkingZone = zone;
+            mapped.Reservations = [];
 
-            if(!await _parkingSlotService.CreateAsync(parkingSlot.MapToModel(zone)))
+            try
             {
-                ModelState.AddModelError("", "Something went wrong while saving the data.");
+                if (!await _parkingSlotService.CreateAsync(mapped))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving the data.");
+                    return StatusCode(500, ModelState);
+                }
+            }
+            catch (DbUpdateException ex)
+            {
+                ModelState.AddModelError("", $"Database Update Exception: {ex.InnerException?.Message ?? ex.Message}");
                 return StatusCode(500, ModelState);
             }
 

@@ -19,24 +19,5 @@ namespace ParkingZoneWebApi.DTOs
 
         [Required]
         public DateTimeOffset CreatedDate { get; set; }
-
-        public ParkingZoneDto(int id, string title, string address, DateTimeOffset createdDate)
-        {
-            Id = id;
-            Title = title;
-            Address = address;
-            CreatedDate = createdDate;
-        }
-
-        public ParkingZone MapToModel()
-        {
-            return new()
-            {
-                Id = Id,
-                Title = Title,
-                Address = Address,
-                CreatedDate = CreatedDate,
-            };
-        }
     }
 }

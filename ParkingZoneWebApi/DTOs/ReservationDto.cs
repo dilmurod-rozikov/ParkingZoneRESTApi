@@ -23,26 +23,5 @@ namespace ParkingZoneWebApi.DTOs
         [Required]
         [ForeignKey(nameof(ParkingSlot))]
         public int ParkingSlotId { get; set; }
-
-        public ReservationDto(int id, uint duration, DateTime started, string vehicleNO, int parkingSlotId)
-        {
-            Id = id;
-            Duration = duration;
-            Started = started;
-            VehicleNO = vehicleNO;
-            ParkingSlotId = parkingSlotId;
-        }
-
-        public Reservation MapToModel()
-        {
-            return new()
-            {
-                Id = Id,
-                Duration = Duration,
-                Started = Started,
-                VehicleNO = VehicleNO,
-                ParkingSlotId = ParkingSlotId
-            };
-        }
     }
 }

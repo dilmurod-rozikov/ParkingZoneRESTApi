@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneWebApi.DTOs;
+using ParkingZoneWebApi.Models;
 using ParkingZoneWebApi.Services.Interfaces;
 
 namespace ParkingZoneWebApi.Controllers
@@ -10,16 +12,18 @@ namespace ParkingZoneWebApi.Controllers
     public class ParkingZoneController : ControllerBase
     {
         private readonly IParkingZoneService _parkingZoneService;
+        private readonly IMapper _mapper;
 
-        public ParkingZoneController(IParkingZoneService parkingZoneService)
+        public ParkingZoneController(IParkingZoneService parkingZoneService, IMapper mapper)
         {
             _parkingZoneService = parkingZoneService;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetParkingZones()
+        public async Task<ActionResult<IEnumerable<ParkingZoneDto>>> GetParkingZones()
         {
-            var zones = await _parkingZoneService.GetAllAsync();
+            var zones = _mapper.Map<List<ParkingZoneDto>>(await _parkingZoneService.GetAllAsync());
             if (zones is null)
                 return NotFound();
 
@@ -27,9 +31,9 @@ namespace ParkingZoneWebApi.Controllers
         }
 
         [HttpGet("ParkingZone/{id}")]
-        public async Task<IActionResult> GetParkingZoneById(int id)
+        public async Task<ActionResult<ParkingZone>> GetParkingZoneById(int id)
         {
-            var zone = await _parkingZoneService.GetByIdAsync(id);
+            var zone = _mapper.Map<ParkingZoneDto>(await _parkingZoneService.GetByIdAsync(id));
             if (zone is null)
                 return NotFound();
 
@@ -37,7 +41,7 @@ namespace ParkingZoneWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateParkingZone(ParkingZoneDto zoneDto)
+        public async Task<ActionResult<ParkingZone>> CreateParkingZone(ParkingZoneDto zoneDto)
         {
             if (zoneDto is null)
                 return NotFound();
@@ -46,7 +50,7 @@ namespace ParkingZoneWebApi.Controllers
 
             try
             {
-                if (!await _parkingZoneService.CreateAsync(zoneDto.MapToModel()))
+                if (!await _parkingZoneService.CreateAsync(_mapper.Map<ParkingZone>(zoneDto)))
                 {
                     ModelState.AddModelError("", "Something went wrong while saving the data.");
                     return StatusCode(500, ModelState);
@@ -55,11 +59,6 @@ namespace ParkingZoneWebApi.Controllers
             catch (DbUpdateException ex)
             {
                 ModelState.AddModelError("", $"Database Update Exception: {ex.InnerException?.Message ?? ex.Message}");
-                return StatusCode(500, ModelState);
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", $"An error occurred: {ex.Message}");
                 return StatusCode(500, ModelState);
             }
 
@@ -74,9 +73,13 @@ namespace ParkingZoneWebApi.Controllers
             if (zoneDto is null || getZone is null)
                 return NotFound();
 
-            if(!await _parkingZoneService.UpdateAsync(zoneDto.MapToModel()))
+            try
             {
-                ModelState.AddModelError("", "Something went wrong in the server while updating the data.");
+                await _parkingZoneService.UpdateAsync(_mapper.Map<ParkingZone>(zoneDto));
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                ModelState.AddModelError("", $"Database Update Exception: {ex.InnerException?.Message ?? ex.Message}");
                 return StatusCode(500, ModelState);
             }
 

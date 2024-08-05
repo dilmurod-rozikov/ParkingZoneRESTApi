@@ -26,9 +26,9 @@ namespace ParkingZoneWebApi.Services
             return await _repository.Insert(entity);
         }
 
-        public async Task<bool> UpdateAsync(T entity)
+        public async Task UpdateAsync(T entity)
         {
-            return await _repository.Update(entity);
+            await _repository.Update(entity);
         }
 
         public async Task<bool> DeleteAsync(T entity)

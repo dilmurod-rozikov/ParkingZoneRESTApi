@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneWebApi.DTOs;
 using ParkingZoneWebApi.Models;
@@ -12,16 +13,20 @@ namespace ParkingZoneWebApi.Controllers
     {
         private readonly IParkingSlotService _parkingSlotService;
         private readonly IReservationService _reservationService;
-        public ReservationController(IParkingSlotService parkingSlotService, IReservationService reservationService)
+        private readonly IMapper _mapper;
+
+        public ReservationController(IParkingSlotService parkingSlotService,
+            IReservationService reservationService, IMapper mapper)
         {
             _parkingSlotService = parkingSlotService;
             _reservationService = reservationService;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ParkingSlot>>> GetReservations()
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetReservations()
         {
-            var reservations = await _reservationService.GetAllAsync();
+            var reservations = _mapper.Map<List<ReservationDto>>(await _reservationService.GetAllAsync());
             if (reservations is null)
                 return NotFound();
 
@@ -29,9 +34,9 @@ namespace ParkingZoneWebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Reservation>> GetReservationById(int id)
+        public async Task<ActionResult<ReservationDto>> GetReservationById(int id)
         {
-            var reservation = await _reservationService.GetByIdAsync(id);
+            var reservation = _mapper.Map<ReservationDto>(await _reservationService.GetByIdAsync(id));
 
             if (reservation == null)
                 return NotFound();
@@ -47,7 +52,7 @@ namespace ParkingZoneWebApi.Controllers
 
             try
             {
-                await _reservationService.UpdateAsync(reservation.MapToModel());
+                await _reservationService.UpdateAsync(_mapper.Map<Reservation>(reservation));
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -59,19 +64,19 @@ namespace ParkingZoneWebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Reservation>> CreateReservation(ReservationDto reservation, int slotId)
+        public async Task<ActionResult> CreateReservation(ReservationDto reservation, int slotId)
         {
             var slot = await _parkingSlotService.GetByIdAsync(slotId);
             if (reservation is null || slot is null)
                 return BadRequest();
 
-            if (!await _reservationService.CreateAsync(reservation.MapToModel()))
+            if (!await _reservationService.CreateAsync(_mapper.Map<Reservation>(reservation)))
             {
                 ModelState.AddModelError("", "Something went wrong while saving the data.");
                 return StatusCode(500, ModelState);
             }
 
-            return CreatedAtAction("GetReservation", new { id = reservation.Id }, reservation);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]

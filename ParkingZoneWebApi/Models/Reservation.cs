@@ -6,14 +6,12 @@ namespace ParkingZoneWebApi.Models
     [Table("Reservation")]
     public class Reservation
     {
-        [Required]
         [Key]
         public int Id { get; set; }
 
-        [Required]
+        [Range(0, uint.MaxValue)]
         public uint Duration { get; set; }
 
-        [Required]
         public DateTime Started { get; set; }
 
         [Required]

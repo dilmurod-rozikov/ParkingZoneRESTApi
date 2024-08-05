@@ -6,7 +6,6 @@ namespace ParkingZoneWebApi.Models
     [Table("ParkingZone")]
     public class ParkingZone
     {
-        [Required]
         [Key]
         public int Id { get; set; }
 
@@ -18,7 +17,6 @@ namespace ParkingZoneWebApi.Models
         [MaxLength(100)]
         public string Address { get; set; }
 
-        [Required]
         public DateTimeOffset CreatedDate { get; set; }
 
         public ICollection<ParkingSlot>? ParkingSlots { get; set; }

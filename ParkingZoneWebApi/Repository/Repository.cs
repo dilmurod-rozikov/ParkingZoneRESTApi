@@ -29,10 +29,10 @@ namespace ParkingZoneWebApi.Repository
             return _context.SaveChanges() > 0;
         }
 
-        public async Task<bool> Update(T entity)
+        public async Task Update(T entity)
         {
-            _context.Set<T>().Update(entity);
-            return await _context.SaveChangesAsync() > 0;
+            _context.Update(entity);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> Delete(T entity)
