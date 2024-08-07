@@ -14,10 +14,15 @@ namespace ParkingZoneWebApi.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ParkingZone>().ToTable("ParkingZone");
-            modelBuilder.Entity<ParkingSlot>().ToTable("ParkingSlot");
-            modelBuilder.Entity<Reservation>().ToTable("Reservation");
-        }
+            modelBuilder.Entity<ParkingZone>()
+                .HasMany(p => p.ParkingSlots)
+                .WithOne(x => x.ParkingZone)
+                .HasForeignKey(x => x.ParkingZoneId);
 
+            modelBuilder.Entity<ParkingSlot>()
+                .HasMany(r => r.Reservations)
+                .WithOne(x => x.ParkingSlot)
+                .HasForeignKey(x => x.ParkingSlotId);
+        }
     }
 }
