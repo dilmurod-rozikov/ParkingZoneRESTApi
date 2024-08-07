@@ -19,7 +19,7 @@ namespace ParkingZoneWebApi.Controllers
         public ParkingSlotsController(IParkingSlotService parkingSlotService, IParkingZoneService parkingZoneService, IMapper mapper)
         {
             _parkingSlotService = parkingSlotService;
-            _parkingSlotService = parkingSlotService;
+            _parkingZoneService = parkingZoneService;
             _mapper = mapper;
         }
 
@@ -45,12 +45,12 @@ namespace ParkingZoneWebApi.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateParkingSlot(int id, ParkingSlotDto parkingSlotDto, [FromServices] IParkingZoneService parkingZoneService)
+        public async Task<IActionResult> UpdateParkingSlot(int id, ParkingSlotDto parkingSlotDto)
         {
             if (id != parkingSlotDto.Id)
                 return BadRequest();
             var slot = await _parkingSlotService.GetByIdAsync(parkingSlotDto.Id);
-            var zone = await parkingZoneService.GetByIdAsync(parkingSlotDto.ParkingZoneId);
+            var zone = await _parkingZoneService.GetByIdAsync(parkingSlotDto.ParkingZoneId);
 
             if (slot is null || zone is null)
                 return NotFound("parkingslot or parkingzone is not found.");
@@ -70,24 +70,19 @@ namespace ParkingZoneWebApi.Controllers
             return NoContent();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> CreateParkingSlot(ParkingSlotDto parkingSlotDto)
+        [HttpPost("parking-slot")]
+        public async Task<ActionResult> CreateParkingSlot(ParkingSlotDto dto)
         {
-            var zone = await _parkingZoneService.GetByIdAsync(parkingSlotDto.ParkingZoneId);
-            if(parkingSlotDto is null || zone is null)
+            var zone = await _parkingZoneService.GetByIdAsync(dto.ParkingZoneId);
+            if(dto is null || zone is null)
                 return BadRequest();
 
-            var mapped = _mapper.Map<ParkingSlot>(parkingSlotDto);
+            var mapped = _mapper.Map<ParkingSlot>(dto);
             mapped.ParkingZone = zone;
-            mapped.Reservations = [];
 
             try
             {
-                if (!await _parkingSlotService.CreateAsync(mapped))
-                {
-                    ModelState.AddModelError("", "Something went wrong while saving the data.");
-                    return StatusCode(500, ModelState);
-                }
+                await _parkingSlotService.CreateAsync(mapped);
             }
             catch (DbUpdateException ex)
             {

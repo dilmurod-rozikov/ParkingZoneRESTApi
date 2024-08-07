@@ -1,12 +1,9 @@
-﻿using ParkingZoneWebApi.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ParkingZoneWebApi.DTOs
 {
     public class ParkingZoneDto
     {
-        [Key]
-        [Required]
         public int Id { get; set; }
 
         [Required]
@@ -17,7 +14,6 @@ namespace ParkingZoneWebApi.DTOs
         [MaxLength(100)]
         public string Address { get; set; }
 
-        [Required]
         public DateTimeOffset CreatedDate { get; set; }
     }
 }

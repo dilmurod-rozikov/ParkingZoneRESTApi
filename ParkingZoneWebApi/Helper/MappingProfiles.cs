@@ -15,6 +15,5 @@ namespace ParkingZoneWebApi.Helper
             CreateMap<Reservation, ReservationDto>();
             CreateMap<ReservationDto, Reservation>();
         }
-
     }
 }

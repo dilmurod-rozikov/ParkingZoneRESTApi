@@ -40,7 +40,7 @@ namespace ParkingZoneWebApi.Controllers
             return Ok(zone);
         }
 
-        [HttpPost]
+        [HttpPost("parking-zone")]
         public async Task<ActionResult<ParkingZone>> CreateParkingZone(ParkingZoneDto zoneDto)
         {
             if (zoneDto is null)
@@ -50,11 +50,7 @@ namespace ParkingZoneWebApi.Controllers
 
             try
             {
-                if (!await _parkingZoneService.CreateAsync(_mapper.Map<ParkingZone>(zoneDto)))
-                {
-                    ModelState.AddModelError("", "Something went wrong while saving the data.");
-                    return StatusCode(500, ModelState);
-                }
+                await _parkingZoneService.CreateAsync(_mapper.Map<ParkingZone>(zoneDto));
             }
             catch (DbUpdateException ex)
             {
@@ -68,10 +64,12 @@ namespace ParkingZoneWebApi.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateParkingZone(int id, ParkingZoneDto zoneDto)
         {
-            var getZone = await _parkingZoneService.GetByIdAsync(id);
-
-            if (zoneDto is null || getZone is null)
+            var exist = await ParkingZoneExists(id);
+            if (!exist)
                 return NotFound();
+
+            if(id != zoneDto.Id || zoneDto is null)
+                return BadRequest();
 
             try
             {
@@ -101,5 +99,9 @@ namespace ParkingZoneWebApi.Controllers
             return Ok();
         }
 
+        private async Task<bool> ParkingZoneExists(int id)
+        {
+            return await _parkingZoneService.GetByIdAsync(id) != null;
+        }
     }
 }

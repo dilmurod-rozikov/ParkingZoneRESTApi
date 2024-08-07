@@ -6,11 +6,8 @@ namespace ParkingZoneWebApi.DTOs
 {
     public class ReservationDto
     {
-        [Required]
-        [Key]
         public int Id { get; set; }
 
-        [Required]
         public uint Duration { get; set; }
 
         [Required]

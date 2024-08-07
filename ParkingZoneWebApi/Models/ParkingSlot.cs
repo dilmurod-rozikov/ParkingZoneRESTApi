@@ -19,7 +19,6 @@ namespace ParkingZoneWebApi.Models
         [ForeignKey(nameof(ParkingZone))]
         public int ParkingZoneId { get; set; }
 
-        [Required]
         [EnumDataType(typeof(Category))]
         public Category Category { get; set; }
 

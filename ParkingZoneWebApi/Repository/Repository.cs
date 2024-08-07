@@ -20,7 +20,9 @@ namespace ParkingZoneWebApi.Repository
 
         public async Task<T?> GetById(int id)
         {
-            return await _context.Set<T>().FindAsync(id);
+            return await _context.Set<T>()
+                         .AsNoTracking()
+                         .FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         }
 
         public async Task<bool> Insert(T entity)
