@@ -31,7 +31,7 @@ namespace ParkingZoneWebApi.Repository
 
         public async Task Update(T entity)
         {
-            _context.Update(entity);
+            _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 

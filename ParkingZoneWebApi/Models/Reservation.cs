@@ -22,7 +22,6 @@ namespace ParkingZoneWebApi.Models
         [ForeignKey(nameof(ParkingSlot))]
         public int ParkingSlotId { get; set; }
 
-        [Required]
         public ParkingSlot? ParkingSlot { get; set; }
     }
 }
