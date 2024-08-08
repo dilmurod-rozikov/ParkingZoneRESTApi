@@ -64,13 +64,17 @@ namespace ParkingZoneWebApi.Controllers
         }
 
         [HttpPost("reservation")]
-        public async Task<ActionResult> CreateReservation(ReservationDto reservation, int slotId)
+        public async Task<ActionResult> CreateReservation(ReservationDto reservation)
         {
-            var slot = await _parkingSlotService.GetByIdAsync(slotId);
+            var slot = await _parkingSlotService.GetByIdAsync(reservation.ParkingSlotId);
             if (reservation is null || slot is null)
                 return BadRequest();
 
-            if (!await _reservationService.CreateAsync(_mapper.Map<Reservation>(reservation)))
+            try
+            {
+                await _reservationService.CreateAsync(_mapper.Map<Reservation>(reservation));
+            }
+            catch
             {
                 ModelState.AddModelError("", "Something went wrong while saving the data.");
                 return StatusCode(500, ModelState);

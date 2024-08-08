@@ -10,7 +10,8 @@ namespace ParkingZoneWebApi.Models
         [Key]
         public int Id { get; set; }
 
-        public uint No { get; set; }
+        [Range(1, int.MaxValue)]
+        public int No { get; set; }
 
         public bool IsAvailable { get; set; }
 

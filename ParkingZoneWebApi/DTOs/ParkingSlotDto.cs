@@ -7,7 +7,7 @@ namespace ParkingZoneWebApi.DTOs
     {
         public int Id { get; set; }
 
-        public uint No { get; set; }
+        public int No { get; set; }
 
         public int ParkingZoneId { get; set; }
 

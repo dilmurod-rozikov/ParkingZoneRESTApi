@@ -36,8 +36,8 @@ namespace ParkingZoneWebApi.Migrations
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
-                    b.Property<long>("No")
-                        .HasColumnType("bigint");
+                    b.Property<int>("No")
+                        .HasColumnType("int");
 
                     b.Property<int>("ParkingZoneId")
                         .HasColumnType("int");
@@ -83,8 +83,8 @@ namespace ParkingZoneWebApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<long>("Duration")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
 
                     b.Property<int>("ParkingSlotId")
                         .HasColumnType("int");

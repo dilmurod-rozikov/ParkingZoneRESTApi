@@ -40,7 +40,7 @@ namespace ParkingZoneWebApi.Controllers
             return Ok(zone);
         }
 
-        [HttpPost("parking-zone")]
+        [HttpPost]
         public async Task<ActionResult<ParkingZone>> CreateParkingZone(ParkingZoneDto zoneDto)
         {
             if (zoneDto is null)

@@ -7,7 +7,7 @@ namespace ParkingZoneWebApi.DTOs
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(25)]
+        [MaxLength(25, ErrorMessage = "The maximum length allowed is 25 characters.")]
         public string Title { get; set; }
 
         [Required]

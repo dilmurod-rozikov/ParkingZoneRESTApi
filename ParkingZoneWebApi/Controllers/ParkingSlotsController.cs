@@ -70,7 +70,7 @@ namespace ParkingZoneWebApi.Controllers
             return NoContent();
         }
 
-        [HttpPost("parking-slot")]
+        [HttpPost]
         public async Task<ActionResult> CreateParkingSlot(ParkingSlotDto dto)
         {
             var zone = await _parkingZoneService.GetByIdAsync(dto.ParkingZoneId);
@@ -78,7 +78,7 @@ namespace ParkingZoneWebApi.Controllers
                 return BadRequest();
 
             var mapped = _mapper.Map<ParkingSlot>(dto);
-            mapped.ParkingZone = zone;
+            mapped.ParkingZoneId = zone.Id; 
 
             try
             {
@@ -90,7 +90,7 @@ namespace ParkingZoneWebApi.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully created.");
+            return NoContent();
         }
 
         [HttpDelete("{id}")]

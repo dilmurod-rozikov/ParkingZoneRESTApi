@@ -8,16 +8,16 @@ namespace ParkingZoneWebApi.DTOs
     {
         public int Id { get; set; }
 
-        public uint Duration { get; set; }
+        public int Duration { get; set; }
 
         [Required]
         public DateTime Started { get; set; }
 
         [Required]
         [MaxLength(10)]
-        public string VehicleNO { get; set; }
+        [MinLength(5)]
+        public string? VehicleNO { get; set; }
 
-        [Required]
         [ForeignKey(nameof(ParkingSlot))]
         public int ParkingSlotId { get; set; }
     }
