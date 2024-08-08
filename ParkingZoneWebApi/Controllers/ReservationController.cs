@@ -63,7 +63,7 @@ namespace ParkingZoneWebApi.Controllers
             return NoContent();
         }
 
-        [HttpPost]
+        [HttpPost("reservation")]
         public async Task<ActionResult> CreateReservation(ReservationDto reservation, int slotId)
         {
             var slot = await _parkingSlotService.GetByIdAsync(slotId);
