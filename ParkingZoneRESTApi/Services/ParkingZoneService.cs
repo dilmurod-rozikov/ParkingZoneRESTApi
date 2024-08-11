@@ -8,5 +8,10 @@ namespace ParkingZoneWebApi.Services
     {
         public ParkingZoneService(IRepository<ParkingZone> repository)
             : base(repository) { }
+
+        public bool HasUniqueTitleAndAddress(IEnumerable<ParkingZone> parkingZones, string title, string address)
+        {
+            return parkingZones.Any(x => x.Address == address && x.Title == title);
+        }
     }
 }

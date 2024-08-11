@@ -77,8 +77,12 @@ namespace ParkingZoneWebApi.Controllers
             if(dto is null || zone is null)
                 return BadRequest();
 
+            var slots = await _parkingSlotService.GetAllAsync();
+            if(_parkingSlotService.HasUniqueSlotNo(slots, dto.No))
+                return BadRequest("ParkingSlot with this No already exist.");
+
             var mapped = _mapper.Map<ParkingSlot>(dto);
-            mapped.ParkingZoneId = zone.Id; 
+            mapped.ParkingZoneId = zone.Id;
 
             try
             {

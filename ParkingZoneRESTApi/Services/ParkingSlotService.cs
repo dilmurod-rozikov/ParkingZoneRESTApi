@@ -8,5 +8,10 @@ namespace ParkingZoneWebApi.Services
     {
         public ParkingSlotService(IRepository<ParkingSlot> repository)
             : base(repository) { }
+
+        public bool HasUniqueSlotNo(IEnumerable<ParkingSlot> slots, int no)
+        {
+            return slots.Any(x => x.No == no);
+        }
     }
 }
