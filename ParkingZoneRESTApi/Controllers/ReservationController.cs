@@ -70,6 +70,9 @@ namespace ParkingZoneWebApi.Controllers
             if (reservation is null || slot is null)
                 return BadRequest();
 
+            if(_parkingSlotService.IsFreeForReservation(slot, reservation.Started, reservation.Duration))
+                return BadRequest("This slot is not free for specified time duration!!!");
+
             try
             {
                 await _reservationService.CreateAsync(_mapper.Map<Reservation>(reservation));
