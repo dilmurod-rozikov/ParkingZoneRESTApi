@@ -63,19 +63,19 @@ namespace ParkingZoneWebApi.Controllers
             return NoContent();
         }
 
-        [HttpPost("reservation")]
-        public async Task<ActionResult> CreateReservation(ReservationDto reservation)
+        [HttpPost]
+        public async Task<ActionResult> CreateReservation(ReservationDto dto)
         {
-            var slot = await _parkingSlotService.GetByIdAsync(reservation.ParkingSlotId);
-            if (reservation is null || slot is null)
+            var slot = await _parkingSlotService.GetByIdAsync(dto.ParkingSlotId);
+            if (dto is null || slot is null)
                 return BadRequest();
 
-            if(_parkingSlotService.IsFreeForReservation(slot, reservation.Started, reservation.Duration))
+            if(await _parkingSlotService.IsFreeForReservationAsync(slot, dto.Started, dto.Duration))
                 return BadRequest("This slot is not free for specified time duration!!!");
 
             try
             {
-                await _reservationService.CreateAsync(_mapper.Map<Reservation>(reservation));
+                await _reservationService.CreateAsync(_mapper.Map<Reservation>(dto));
             }
             catch
             {

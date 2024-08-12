@@ -23,6 +23,6 @@ namespace ParkingZoneWebApi.Models
         [EnumDataType(typeof(Category))]
         public Category Category { get; set; }
 
-        public ICollection<Reservation>? Reservations { get; set; }
+        public virtual ICollection<Reservation>? Reservations { get; set; }
     }
 }

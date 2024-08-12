@@ -14,12 +14,12 @@ namespace ParkingZoneWebApi.Services
             return slots.Any(x => x.No == no);
         }
 
-        public bool IsFreeForReservation(ParkingSlot slot, DateTime started, int duration)
+        public async Task<bool> IsFreeForReservationAsync(ParkingSlot slot, DateTime started, int duration)
         {
             return !slot.Reservations!.Any(x =>
-                (started >= x.Started & started.AddHours(duration) <= x.Started.AddHours(x.Duration)) |
-                (started >= x.Started & started < x.Started.AddHours(x.Duration)) |
-                (started <= x.Started & x.Started < started.AddHours(duration)));
+                (started >= x.Started && started.AddHours(duration) <= x.Started.AddHours(x.Duration)) ||
+                (started >= x.Started && started < x.Started.AddHours(x.Duration)) ||
+                (started <= x.Started && x.Started < started.AddHours(duration)));
         }
     }
 }
