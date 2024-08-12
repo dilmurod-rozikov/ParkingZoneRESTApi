@@ -67,10 +67,10 @@ namespace ParkingZoneWebApi.Controllers
         public async Task<ActionResult> CreateReservation(ReservationDto dto)
         {
             var slot = await _parkingSlotService.GetByIdAsync(dto.ParkingSlotId);
-            if (dto is null || slot is null)
-                return BadRequest();
+            if (slot is null)
+                return BadRequest("Given ParkingSlot id is not Found");
 
-            if(await _parkingSlotService.IsFreeForReservationAsync(slot, dto.Started, dto.Duration))
+            if (await _parkingSlotService.IsFreeForReservationAsync(slot, dto.Started, dto.Duration))
                 return BadRequest("This slot is not free for specified time duration!!!");
 
             try

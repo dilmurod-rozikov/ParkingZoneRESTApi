@@ -15,7 +15,7 @@ namespace ParkingZoneWebApi.Models
 
         public bool IsAvailable { get; set; }
 
-        public ParkingZone? ParkingZone { get; set; }
+        public virtual ParkingZone? ParkingZone { get; set; }
 
         [ForeignKey(nameof(ParkingZone))]
         public int ParkingZoneId { get; set; }

@@ -16,7 +16,7 @@ namespace ParkingZoneWebApi.Services
 
         public async Task<bool> IsFreeForReservationAsync(ParkingSlot slot, DateTime started, int duration)
         {
-            return !slot.Reservations!.Any(x =>
+            return slot.Reservations!.Any(x =>
                 (started >= x.Started && started.AddHours(duration) <= x.Started.AddHours(x.Duration)) ||
                 (started >= x.Started && started < x.Started.AddHours(x.Duration)) ||
                 (started <= x.Started && x.Started < started.AddHours(duration)));
