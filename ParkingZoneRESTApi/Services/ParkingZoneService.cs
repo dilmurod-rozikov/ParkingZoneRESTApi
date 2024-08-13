@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using ParkingZoneWebApi.Models;
+﻿using ParkingZoneWebApi.Models;
 using ParkingZoneWebApi.Repository.Interfaces;
 using ParkingZoneWebApi.Services.Interfaces;
 
