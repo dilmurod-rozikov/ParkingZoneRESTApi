@@ -15,7 +15,7 @@ namespace ParkingZoneWebApi.Models
 
         public bool IsAvailable { get; set; }
 
-        public ParkingZone? ParkingZone { get; set; }
+        public virtual ParkingZone? ParkingZone { get; set; }
 
         [ForeignKey(nameof(ParkingZone))]
         public int ParkingZoneId { get; set; }
@@ -23,6 +23,6 @@ namespace ParkingZoneWebApi.Models
         [EnumDataType(typeof(Category))]
         public Category Category { get; set; }
 
-        public ICollection<Reservation>? Reservations { get; set; }
+        public virtual ICollection<Reservation>? Reservations { get; set; }
     }
 }

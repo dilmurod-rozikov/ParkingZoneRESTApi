@@ -24,5 +24,10 @@ namespace ParkingZoneWebApi.DataAccess
                 .WithOne(x => x.ParkingSlot)
                 .HasForeignKey(x => x.ParkingSlotId);
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies();
+        }
     }
 }

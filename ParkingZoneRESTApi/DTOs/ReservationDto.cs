@@ -8,6 +8,7 @@ namespace ParkingZoneWebApi.DTOs
     {
         public int Id { get; set; }
 
+        [Range(1, int.MaxValue)]
         public int Duration { get; set; }
 
         [Required]

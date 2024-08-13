@@ -15,13 +15,12 @@ namespace ParkingZoneWebApi.Repository
 
         public async Task<IEnumerable<T>> GetAll()
         {
-            return await _context.Set<T>().AsNoTracking().ToListAsync();
+            return await _context.Set<T>().ToListAsync();
         }
 
         public async Task<T?> GetById(int id)
         {
             return await _context.Set<T>()
-                         .AsNoTracking()
                          .FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         }
 

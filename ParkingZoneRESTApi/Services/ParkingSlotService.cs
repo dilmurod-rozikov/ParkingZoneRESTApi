@@ -8,5 +8,18 @@ namespace ParkingZoneWebApi.Services
     {
         public ParkingSlotService(IRepository<ParkingSlot> repository)
             : base(repository) { }
+
+        public bool HasUniqueSlotNo(IEnumerable<ParkingSlot> slots, int no)
+        {
+            return slots.Any(x => x.No == no);
+        }
+
+        public async Task<bool> IsFreeForReservationAsync(ParkingSlot slot, DateTime started, int duration)
+        {
+            return slot.Reservations!.Any(x => (slot.IsAvailable) &
+                (started >= x.Started && started.AddHours(duration) <= x.Started.AddHours(x.Duration)) ||
+                (started >= x.Started && started < x.Started.AddHours(x.Duration)) ||
+                (started <= x.Started && x.Started < started.AddHours(duration)));
+        }
     }
 }

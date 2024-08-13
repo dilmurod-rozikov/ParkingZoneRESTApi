@@ -33,6 +33,17 @@ namespace ParkingZoneWebApi.Controllers
             return Ok(slots);
         }
 
+        [HttpGet("zone-{id}")]
+        public async Task<ActionResult<IEnumerable<ParkingSlotDto>>> GetSlotByZoneId(int id)
+        {
+            var zone = await _parkingZoneService.GetByIdAsync(id);
+            if (zone is null)
+                return NotFound("Given ParkingZone id is not found.");
+            var slots = _mapper.Map<List<ParkingSlotDto>>(zone.ParkingSlots);
+
+            return Ok(slots);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ParkingSlot>> GetParkingSlotById(int id)
         {
@@ -77,8 +88,13 @@ namespace ParkingZoneWebApi.Controllers
             if(dto is null || zone is null)
                 return BadRequest();
 
+            var slots = await _parkingSlotService.GetAllAsync();
+
+            if(_parkingSlotService.HasUniqueSlotNo(slots, dto.No))
+                return BadRequest("ParkingSlot with this NO property already exist.");
+
             var mapped = _mapper.Map<ParkingSlot>(dto);
-            mapped.ParkingZoneId = zone.Id; 
+            mapped.ParkingZoneId = zone.Id;
 
             try
             {

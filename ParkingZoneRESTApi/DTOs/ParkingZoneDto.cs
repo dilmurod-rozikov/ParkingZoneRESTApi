@@ -13,7 +13,5 @@ namespace ParkingZoneWebApi.DTOs
         [Required]
         [MaxLength(100)]
         public string Address { get; set; }
-
-        public DateTimeOffset CreatedDate { get; set; }
     }
 }
