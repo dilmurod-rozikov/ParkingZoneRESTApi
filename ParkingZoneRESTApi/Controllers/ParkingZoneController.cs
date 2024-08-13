@@ -46,6 +46,7 @@ namespace ParkingZoneWebApi.Controllers
             if (zoneDto is null)
                 return NotFound();
             var zones = await _parkingZoneService.GetAllAsync();
+
             if (_parkingZoneService.HasUniqueTitleAndAddress(zones, zoneDto.Title, zoneDto.Address))
             {
                 ModelState.AddModelError("", "Parkingzone with this title and address alreay exist.");

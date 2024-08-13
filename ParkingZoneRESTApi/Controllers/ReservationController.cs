@@ -66,6 +66,7 @@ namespace ParkingZoneWebApi.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateReservation(ReservationDto dto)
         {
+            ///////////BUGGG
             var slot = await _parkingSlotService.GetByIdAsync(dto.ParkingSlotId);
             if (slot is null)
                 return BadRequest("Given ParkingSlot id is not Found");
