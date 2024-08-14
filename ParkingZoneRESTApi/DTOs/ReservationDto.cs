@@ -9,10 +9,10 @@ namespace ParkingZoneWebApi.DTOs
         public int Id { get; set; }
 
         [Range(1, int.MaxValue)]
-        public int Duration { get; set; }
+        public int Duration { get; set; } = 1;
 
         [Required]
-        public DateTime Started { get; set; }
+        public DateTime Started { get; set; } = DateTime.Now;
 
         [Required]
         [MaxLength(10)]

@@ -10,9 +10,9 @@ namespace ParkingZoneWebApi.Models
         public int Id { get; set; }
 
         [Range(0, uint.MaxValue)]
-        public int Duration { get; set; }
+        public int Duration { get; set; } = 1;
 
-        public DateTime Started { get; set; }
+        public DateTime Started { get; set; } = DateTime.Now;
 
         [Required]
         [MaxLength(10)]
