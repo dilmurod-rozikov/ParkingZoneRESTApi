@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneWebApi.DTOs;
@@ -54,7 +53,7 @@ namespace ParkingZoneWebApi.Controllers
             if (slot is null)
                 return BadRequest("Given ParkingSlot id is not Found");
 
-            if (await _parkingSlotService.IsFreeForReservationAsync(slot, dto.Started, dto.Duration))
+            if (_parkingSlotService.IsFreeForReservationAsync(slot, dto.Started, dto.Duration))
                 return BadRequest("This slot is not free for specified time duration!!!");
 
             try
@@ -77,7 +76,7 @@ namespace ParkingZoneWebApi.Controllers
             if (slot is null)
                 return BadRequest("Given ParkingSlot id is not Found");
 
-            if (await _parkingSlotService.IsFreeForReservationAsync(slot, dto.Started, dto.Duration))
+            if (_parkingSlotService.IsFreeForReservationAsync(slot, dto.Started, dto.Duration))
                 return BadRequest("This slot is not free for specified time duration!!!");
 
             if (dto.Started < DateTime.Now)

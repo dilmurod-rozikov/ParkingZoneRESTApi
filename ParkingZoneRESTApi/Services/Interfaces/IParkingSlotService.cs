@@ -6,6 +6,6 @@ namespace ParkingZoneWebApi.Services.Interfaces
     {
         bool HasUniqueSlotNo(IEnumerable<ParkingSlot> slots, int no);
 
-        Task<bool> IsFreeForReservationAsync(ParkingSlot slot, DateTime start, int duration);
+        bool IsFreeForReservationAsync(ParkingSlot slot, DateTime start, int duration);
     }
 }
