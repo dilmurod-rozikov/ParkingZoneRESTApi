@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneWebApi.DTOs;
@@ -56,17 +57,22 @@ namespace ParkingZoneWebApi.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateParkingSlot(int id, ParkingSlotDto parkingSlotDto)
+        public async Task<IActionResult> UpdateParkingSlot(int id, ParkingSlotDto dto)
         {
-            if (id != parkingSlotDto.Id)
+            if (id != dto.Id)
                 return BadRequest();
-            var slot = await _parkingSlotService.GetByIdAsync(parkingSlotDto.Id);
-            var zone = await _parkingZoneService.GetByIdAsync(parkingSlotDto.ParkingZoneId);
+            var slot = await _parkingSlotService.GetByIdAsync(dto.Id);
+            var zone = await _parkingZoneService.GetByIdAsync(dto.ParkingZoneId);
 
             if (slot is null || zone is null)
                 return NotFound("parkingslot or parkingzone is not found.");
 
-            var mapped = _mapper.Map<ParkingSlot>(parkingSlotDto);
+            var slots = await _parkingSlotService.GetAllAsync();
+
+            if (_parkingSlotService.HasUniqueSlotNo(slots, dto.No))
+                return BadRequest("ParkingSlot with this NO property already exist.");
+
+            var mapped = _mapper.Map<ParkingSlot>(dto);
 
             try
             {

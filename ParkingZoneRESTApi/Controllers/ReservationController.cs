@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneWebApi.DTOs;
@@ -45,14 +46,20 @@ namespace ParkingZoneWebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateReservation(int id, ReservationDto reservation)
+        public async Task<IActionResult> UpdateReservation(int id, ReservationDto dto)
         {
-            if (id != reservation.Id)
+            if (id != dto.Id)
                 return BadRequest();
+            var slot = await _parkingSlotService.GetByIdAsync(dto.ParkingSlotId);
+            if (slot is null)
+                return BadRequest("Given ParkingSlot id is not Found");
+
+            if (await _parkingSlotService.IsFreeForReservationAsync(slot, dto.Started, dto.Duration))
+                return BadRequest("This slot is not free for specified time duration!!!");
 
             try
             {
-                await _reservationService.UpdateAsync(_mapper.Map<Reservation>(reservation));
+                await _reservationService.UpdateAsync(_mapper.Map<Reservation>(dto));
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -73,6 +80,9 @@ namespace ParkingZoneWebApi.Controllers
 
             if (await _parkingSlotService.IsFreeForReservationAsync(slot, dto.Started, dto.Duration))
                 return BadRequest("This slot is not free for specified time duration!!!");
+
+            if (dto.Started < DateTime.Now)
+                return BadRequest("You can't reserve for past.");
 
             try
             {
