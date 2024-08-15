@@ -9,12 +9,12 @@ namespace ParkingZoneWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ParkingZoneController : ControllerBase
+    public class ParkingZonesController : ControllerBase
     {
         private readonly IParkingZoneService _parkingZoneService;
         private readonly IMapper _mapper;
 
-        public ParkingZoneController(IParkingZoneService parkingZoneService, IMapper mapper)
+        public ParkingZonesController(IParkingZoneService parkingZoneService, IMapper mapper)
         {
             _parkingZoneService = parkingZoneService;
             _mapper = mapper;
