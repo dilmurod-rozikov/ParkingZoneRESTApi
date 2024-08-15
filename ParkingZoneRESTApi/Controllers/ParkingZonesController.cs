@@ -41,7 +41,8 @@ namespace ParkingZoneWebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ParkingZoneDto>>> SearchByTitleAndAddress(string title, string address)
+        [Route("search")]
+        public async Task<ActionResult<IEnumerable<ParkingZoneDto>>> SearchByTitleAndAddress(string? title = null, string? address = null)
         {
             if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(address))
                 return BadRequest("Title and address cannot both be null or empty.");
@@ -55,7 +56,7 @@ namespace ParkingZoneWebApi.Controllers
                 result.AddRange(await _parkingZoneService.SearchByAddress(address));
 
             if (result.Count == 0)
-                return NotFound($"Not a single parking-zone exist with {title} or {address}");
+                return NotFound($"Not a single parking-zone exist with provided parameters");
 
             var map = _mapper.Map<IEnumerable<ParkingZoneDto>>(result);
             return Ok(map);
