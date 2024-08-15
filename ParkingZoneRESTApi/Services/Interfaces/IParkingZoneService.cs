@@ -8,6 +8,8 @@ namespace ParkingZoneWebApi.Services.Interfaces
 
 		public new Task CreateAsync(ParkingZone zone);
 
-		public Task SearchByTitleOrAddress(string text);
+		public Task<IEnumerable<ParkingZone>> SearchByTitle(string title);
+
+		public Task<IEnumerable<ParkingZone>> SearchByAddress(string address);
 	}
 }
