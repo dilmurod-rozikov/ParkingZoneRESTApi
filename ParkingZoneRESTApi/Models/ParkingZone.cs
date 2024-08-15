@@ -12,12 +12,12 @@ namespace ParkingZoneWebApi.Models
         [Required]
         [MaxLength(25, ErrorMessage = "The maximum length allowed is 25 characters.")]
         [MinLength(3)]
-        public string? Title { get; set; }
+        public string Title { get; set; }
 
         [Required]
         [MaxLength(100, ErrorMessage = "The maximum length allowed is 100 characters.")]
         [MinLength(3)]
-        public string? Address { get; set; }
+        public string Address { get; set; }
 
         public DateTimeOffset CreatedDate { get; set; }
 

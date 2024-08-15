@@ -19,5 +19,15 @@ namespace ParkingZoneWebApi.Services
             zone.CreatedDate = DateTime.Now;
             await base.CreateAsync(zone);
         }
+
+        public async Task<IEnumerable<ParkingZone>> SearchByTitle(string title)
+        {
+            return GetAllAsync().Result.Where(x => x.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public async Task<IEnumerable<ParkingZone>> SearchByAddress(string address)
+        {
+            return GetAllAsync().Result.Where(x => x.Address.Equals(address, StringComparison.OrdinalIgnoreCase));
+        }
     }
 }
