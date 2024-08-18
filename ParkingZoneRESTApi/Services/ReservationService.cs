@@ -9,9 +9,9 @@ namespace ParkingZoneWebApi.Services
         public ReservationService(IRepository<Reservation> repository)
             : base(repository) { }
 
-        public IEnumerable<Reservation> GetReservationsBySlotId(ParkingSlotService slotService, int slotId)
+        public IEnumerable<Reservation> GetReservationsBySlotId(ParkingSlot slot)
         {
-            return slotService.GetByIdAsync(slotId).Result!.Reservations!;
+            return slot.Reservations!;
         }
     }
 }

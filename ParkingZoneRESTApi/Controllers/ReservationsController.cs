@@ -44,6 +44,11 @@ namespace ParkingZoneWebApi.Controllers
             return Ok(reservation);
         }
 
+        [HttpGet("slotId/{id}")]
+        public ActionResult<IEnumerable<ReservationDto>> GetReservationsBySlotId(int slotId)
+        {
+
+        }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateReservation(int id, ReservationDto dto)
         {
