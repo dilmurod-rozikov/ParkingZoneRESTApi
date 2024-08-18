@@ -3,6 +3,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneWebApi.DTOs;
+using ParkingZoneWebApi.Enums;
 using ParkingZoneWebApi.Models;
 using ParkingZoneWebApi.Services.Interfaces;
 
@@ -54,6 +55,13 @@ namespace ParkingZoneWebApi.Controllers
                 return NotFound();
 
             return Ok(parkingSlot);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ParkingSlot>>> GetSlotsByCategory(Category category)
+        {
+            var slots = await _parkingZoneService.GetAllAsync();
+            return Ok();
         }
 
         [HttpPatch("{id}")]
