@@ -44,6 +44,17 @@ namespace ParkingZoneWebApi.Controllers
             return Ok(reservation);
         }
 
+        [HttpGet("slotId/{slotId}")]
+        public async Task<ActionResult<IEnumerable<ReservationDto>>> GetReservationsBySlotId(int slotId)
+        {
+            var slot = await _parkingSlotService.GetByIdAsync(slotId);
+            if (slot == null)
+                return NotFound("Parkingslot does not exist with this id.");
+
+            var reservations = _reservationService.GetReservationsBySlotId(slot);
+            var mapped = _mapper.Map<IEnumerable<ReservationDto>>(reservations);
+            return Ok(mapped);
+        }
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateReservation(int id, ReservationDto dto)
         {
