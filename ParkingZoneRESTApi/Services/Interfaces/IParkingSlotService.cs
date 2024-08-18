@@ -9,6 +9,6 @@ namespace ParkingZoneWebApi.Services.Interfaces
 
         bool IsFreeForReservation(ParkingSlot slot, DateTime start, int duration);
 
-        public IEnumerable<ParkingSlot> GetSlotsByCategory(IEnumerable<ParkingSlot> slots, Category category);
+        public IEnumerable<ParkingSlot> GetSlotsByCategory(Category category);
     }
 }

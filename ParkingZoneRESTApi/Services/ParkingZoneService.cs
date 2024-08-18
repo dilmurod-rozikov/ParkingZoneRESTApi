@@ -20,12 +20,12 @@ namespace ParkingZoneWebApi.Services
             await base.CreateAsync(zone);
         }
 
-        public async Task<IEnumerable<ParkingZone>> SearchByTitle(string title)
+        public IEnumerable<ParkingZone> SearchByTitle(string title)
         {
             return GetAllAsync().Result.Where(x => x.Title.Equals(title, StringComparison.OrdinalIgnoreCase));
         }
 
-        public async Task<IEnumerable<ParkingZone>> SearchByAddress(string address)
+        public IEnumerable<ParkingZone> SearchByAddress(string address)
         {
             return GetAllAsync().Result.Where(x => x.Address.Equals(address, StringComparison.OrdinalIgnoreCase));
         }

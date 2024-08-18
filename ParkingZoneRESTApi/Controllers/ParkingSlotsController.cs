@@ -35,7 +35,7 @@ namespace ParkingZoneWebApi.Controllers
             return Ok(slots);
         }
 
-        [HttpGet("zone-{id}")]
+        [HttpGet("zone/{id}")]
         public async Task<ActionResult<IEnumerable<ParkingSlotDto>>> GetSlotByZoneId(int id)
         {
             var zone = await _parkingZoneService.GetByIdAsync(id);
@@ -46,7 +46,7 @@ namespace ParkingZoneWebApi.Controllers
             return Ok(slots);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<ParkingSlot>> GetParkingSlotById(int id)
         {
             var parkingSlot = _mapper.Map<ParkingSlotDto>(await _parkingSlotService.GetByIdAsync(id));
@@ -57,11 +57,15 @@ namespace ParkingZoneWebApi.Controllers
             return Ok(parkingSlot);
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ParkingSlot>>> GetSlotsByCategory(Category category)
+        [HttpGet("{category}")]
+        public ActionResult<IEnumerable<ParkingSlotDto>> GetSlotsByCategory(Category category)
         {
-            var slots = await _parkingZoneService.GetAllAsync();
-            return Ok();
+            var slots = _parkingSlotService.GetSlotsByCategory(category);
+            if (slots is null)
+                return NotFound("No slots found with this category.");
+
+            var result = _mapper.Map<IEnumerable<ParkingSlotDto>>(slots);
+            return Ok(result);
         }
 
         [HttpPatch("{id}")]

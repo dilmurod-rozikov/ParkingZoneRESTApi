@@ -23,9 +23,9 @@ namespace ParkingZoneWebApi.Services
                 (started <= x.Started && x.Started < started.AddHours(duration)));
         }
 
-        public IEnumerable<ParkingSlot> GetSlotsByCategory(IEnumerable<ParkingSlot> slots, Category category)
+        public IEnumerable<ParkingSlot> GetSlotsByCategory(Category category)
         {
-            return slots.Where(x => x.Category == category);
+            return GetAllAsync().Result.Where(x => x.Category == category);
         }
     }
 }
