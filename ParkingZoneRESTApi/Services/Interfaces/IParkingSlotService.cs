@@ -1,4 +1,5 @@
-﻿using ParkingZoneWebApi.Models;
+﻿using ParkingZoneWebApi.Enums;
+using ParkingZoneWebApi.Models;
 
 namespace ParkingZoneWebApi.Services.Interfaces
 {
@@ -7,5 +8,7 @@ namespace ParkingZoneWebApi.Services.Interfaces
         bool HasUniqueSlotNo(IEnumerable<ParkingSlot> slots, int no);
 
         bool IsFreeForReservation(ParkingSlot slot, DateTime start, int duration);
+
+        public IEnumerable<ParkingSlot> GetSlotsByCategory(Category category);
     }
 }

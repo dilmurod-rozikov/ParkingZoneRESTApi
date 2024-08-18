@@ -3,6 +3,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkingZoneWebApi.DTOs;
+using ParkingZoneWebApi.Enums;
 using ParkingZoneWebApi.Models;
 using ParkingZoneWebApi.Services.Interfaces;
 
@@ -34,7 +35,7 @@ namespace ParkingZoneWebApi.Controllers
             return Ok(slots);
         }
 
-        [HttpGet("zone-{id}")]
+        [HttpGet("zone/{id}")]
         public async Task<ActionResult<IEnumerable<ParkingSlotDto>>> GetSlotByZoneId(int id)
         {
             var zone = await _parkingZoneService.GetByIdAsync(id);
@@ -45,7 +46,7 @@ namespace ParkingZoneWebApi.Controllers
             return Ok(slots);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<ParkingSlot>> GetParkingSlotById(int id)
         {
             var parkingSlot = _mapper.Map<ParkingSlotDto>(await _parkingSlotService.GetByIdAsync(id));
@@ -54,6 +55,17 @@ namespace ParkingZoneWebApi.Controllers
                 return NotFound();
 
             return Ok(parkingSlot);
+        }
+
+        [HttpGet("{category}")]
+        public ActionResult<IEnumerable<ParkingSlotDto>> GetSlotsByCategory(Category category)
+        {
+            var slots = _parkingSlotService.GetSlotsByCategory(category);
+            if (slots is null)
+                return NotFound("No slots found with this category.");
+
+            var result = _mapper.Map<IEnumerable<ParkingSlotDto>>(slots);
+            return Ok(result);
         }
 
         [HttpPatch("{id}")]
