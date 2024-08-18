@@ -1,4 +1,5 @@
-﻿using ParkingZoneWebApi.Models;
+﻿using ParkingZoneWebApi.Enums;
+using ParkingZoneWebApi.Models;
 using ParkingZoneWebApi.Repository.Interfaces;
 using ParkingZoneWebApi.Services.Interfaces;
 
@@ -16,10 +17,15 @@ namespace ParkingZoneWebApi.Services
 
         public bool IsFreeForReservation(ParkingSlot slot, DateTime started, int duration)
         {
-            return slot.Reservations!.Any(x => (slot.IsAvailable) &
-                (started >= x.Started && started.AddHours(duration) <= x.Started.AddHours(x.Duration)) ||
+            return slot.Reservations!.Any(x => ((slot.IsAvailable) &
+                (started >= x.Started && started.AddHours(duration) <= x.Started.AddHours(x.Duration))) ||
                 (started >= x.Started && started < x.Started.AddHours(x.Duration)) ||
                 (started <= x.Started && x.Started < started.AddHours(duration)));
+        }
+
+        public IEnumerable<ParkingSlot> GetSlotsByCategory(IEnumerable<ParkingSlot> slots, Category category)
+        {
+            return slots.Where(x => x.Category == category);
         }
     }
 }
