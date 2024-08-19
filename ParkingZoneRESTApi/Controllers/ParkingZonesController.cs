@@ -56,7 +56,7 @@ namespace ParkingZoneWebApi.Controllers
                 result.AddRange(_parkingZoneService.SearchByAddress(address));
 
             if (result.Count == 0)
-                return NotFound($"Not a single parking-zone exist with provided parameters");
+                return NotFound("Not a single parking-zone exist with provided parameters");
 
             var map = _mapper.Map<IEnumerable<ParkingZoneDto>>(result);
             return Ok(map);
